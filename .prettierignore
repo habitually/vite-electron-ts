@@ -2,7 +2,7 @@
 dist
 build
 dist-ssr
-mock
+# mock
 node_modules
 public
 src/renderer/libs/*

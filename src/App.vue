@@ -1,25 +1,34 @@
-<script setup lang="ts">
-import { useIpcRenderer } from '@vueuse/electron';
-
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue';
-const ipcRenderer = useIpcRenderer();
-ipcRenderer.send('window-new', 'im render'); // 向主进程通信
-</script>
-
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+    <el-config-provider :locale="lang">
+        <router-view></router-view>
+    </el-config-provider>
 </template>
+<script setup lang="ts">
+import { onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import iconfontInit from '/@/utils/iconfont'
+import { useRoute } from 'vue-router'
+import { setTitleFromRoute } from '/@/utils/common'
+import { useConfig } from '/@/stores/config'
+import { useTerminal } from '/@/stores/terminal'
 
-<style>
-#app {
-  margin-top: 60px;
-  color: #2c3e50;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>
+const config = useConfig()
+const route = useRoute()
+const terminal = useTerminal()
+
+// 初始化 element 的语言包
+const { t, getLocaleMessage } = useI18n()
+const lang = getLocaleMessage(config.lang.defaultLang) as any
+onMounted(() => {
+    iconfontInit()
+    terminal.init()
+})
+
+// 监听路由变化时更新浏览器标题
+watch(
+    () => route.path,
+    () => {
+        setTitleFromRoute(t)
+    }
+)
+</script>

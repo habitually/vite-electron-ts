@@ -7,6 +7,8 @@ ipcMain.on('window-new', (e: Event, data: string) => {
 
 const createWindow = () => {
   const win = new BrowserWindow({
+    width: 1440,
+    height: 720,
     webPreferences: {
       contextIsolation: false, // 是否开启隔离上下文
       nodeIntegration: true, // 渲染进程使用Node API
